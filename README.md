@@ -22,7 +22,7 @@ npm run pack
 Go to release
 
 ### Goal
-- [ ] Get rid of NodeGUI
 - [ ] Language Support
+- [ ] Get rid of NodeGUI
 - [ ] Switch to flutter?
 - [ ] Android Support
