@@ -21,10 +21,11 @@ async function extractRarArchive(file:string, destination:string) {
 
 //
 let mainFolder =`${process.env.HOME}/RoModAssets`
-import {QPixmap,ButtonRole,QMessageBox,QProgressBar,QButtonGroup,QFont,QListWidgetItem, QListWidget,QMainWindow, QWidget, QLabel, FlexLayout, QPushButton, QIcon,QLineEdit,QTextEdit } from '@nodegui/nodegui';
+import {QPixmap,ButtonRole,QMessageBox,QProgressBar,QButtonGroup,QFont,QListWidgetItem, QListWidget,QMainWindow, QWidget, QLabel, FlexLayout, QPushButton, QIcon,QLineEdit,QTextEdit,QListWidgetSignals } from '@nodegui/nodegui';
 import axios from 'axios';
 import { clear } from 'console';
 import fs from "fs"
+import { removeAllListeners } from 'process';
 var AdmZip = require("adm-zip");
 let currentPage = 1
 
@@ -163,12 +164,22 @@ const pt = new QLineEdit()
 pt.setPlaceholderText("Search Mod/Texture Packs")
 pt.setAlignment(0x84)
 const list = new QListWidget()
+let currentResult:any
+list.addEventListener("itemActivated",(item) => {
+  let index = list.currentIndex().row()
+  console.log(index)
+  let i =   currentResult.data._aRecords[index]
+  createWindow(i._idRow)
+  
+})
+let currentListener:QListWidgetSignals
 function load(page:number){
+ 
   axios({
     method: 'get',
     url: `https://gamebanana.com/apiv10/Mod/Index?_nPage=${page}&_nPerpage=50&_aFilters%5BGeneric_Category%5D=598`,
 }).then((result) => {
- list:clear()
+currentResult = result.data._aRecords
   result.data._aRecords.forEach((mod:any) => {
     const item = new QListWidgetItem();
     item.setText(mod._sName)
@@ -177,13 +188,6 @@ function load(page:number){
    
     list.addItem(item)
    
-  })
-  list.addEventListener("itemActivated",(item) => {
-    let index = list.currentIndex().row()
-    console.log(index)
-    let i =   result.data._aRecords[index]
-    createWindow(i._idRow)
-
   })
 }).catch((msg) => {
   console.log(msg)
@@ -197,11 +201,13 @@ back.addEventListener("clicked",() => {
    return
   }
   currentPage = currentPage - 1
+  list.clear()
   load(currentPage)
 })
 next.addEventListener("clicked",() => {
  console.log("next")
   currentPage = currentPage + 1
+  list.clear()
   load(currentPage)
 })
 const centralWidget = new QWidget();
@@ -210,7 +216,6 @@ const rootLayout = new FlexLayout();
 centralWidget.setLayout(rootLayout);
 rootLayout.addWidget(title);
 rootLayout.addWidget(status);
-rootLayout.addWidget(pt);
 rootLayout.addWidget(list);
 rootLayout.addWidget(back)
 rootLayout.addWidget(next)

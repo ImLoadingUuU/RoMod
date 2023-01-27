@@ -3,3 +3,5 @@ dist/
 *.log
 .vscode
 deploy
+yarn.lock
+package-lock.json
