@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@nodegui/nodegui": "^0.57.1",
+    "@types/fs-extra": "^11.0.1",
     "adm-zip": "^0.5.10",
     "axios": "^1.2.4",
+    "fs-extra": "^11.1.0",
     "node-unrar-js": "^2.0.0",
     "original-fs": "^1.2.0",
     "stream": "^0.0.2",

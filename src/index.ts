@@ -1,9 +1,46 @@
+const execSync = require('child_process').execSync;
+import fs from "fs-extra"
 import {QMessageBox,ButtonRole,QButtonGroup,QFont,QListWidgetItem, QListWidget,QMainWindow, QWidget, QLabel, FlexLayout, QPushButton, QIcon } from '@nodegui/nodegui';
+import { dirname } from "path";
 let modPacks:Array<{
   name: string,
   enabled: boolean,
   noInstall: boolean
 }> = []
+
+const dir = `${process.env.HOME}/RoModAssets`
+// Check Script
+if (!fs.existsSync(`${dir}`)){
+  function creationErr(){
+
+   const messageBox = new QMessageBox();
+   messageBox.setText("Error! RoMod Directory could not be created!");
+   const accept = new QPushButton();
+   accept.addEventListener("clicked",() => {
+     process.exit(0)
+   })
+   accept.setText('Restart Applicationn');
+   messageBox.addButton(accept, ButtonRole.AcceptRole);
+   messageBox.exec();
+  }
+  fs.ensureDir(`${dir}`).catch((err) => {
+    console.log(err)
+     creationErr()
+  })
+
+
+  fs.ensureDir(`${dir}/Temp`).catch(() => {
+    creationErr()
+  })
+  fs.ensureDir(`${dir}/Mods`).catch(() => {
+    creationErr()
+  })
+  fs.mkdir(`${dir}/Recovery`).catch(() => {
+    creationErr()
+  })
+  fs.writeFile(`${dir}/config.json`,modPacks.toString())
+ }
+//
 function updateConfig(){
   fs.writeFile(`${process.env.HOME}/RoModAssets/config.json`,modPacks.toString(),(err) => {
 if (err) {
@@ -25,48 +62,26 @@ function error(message:string){
 const win = new QMainWindow();
 win.setMaximumSize(350, 600);
 win.setMinimumSize(350, 600);
-import fs from "fs"
+
+function dirOpen(dirPath:string) {
+  let command = '';
+  switch (process.platform) {
+    case 'darwin':
+      command = 'open';
+      break;
+    case 'win32':
+      command = 'explorer';
+      break;
+    default:
+      command = 'xdg-open';
+      break;
+  }
+  console.log('fs.execSync', `${command} "${dirPath}"`);
+  return execSync(`${command} "${dirPath}"`);
+}
+
 // create directory using fs in document called RoMod
-if (!fs.existsSync(`${process.env.HOME}/RoModAssets`)){
- fs.mkdir(`${process.env.HOME}/RoModAssets`, (err) => {
- if(err){
-  console.log(err)
-  const messageBox = new QMessageBox();
-  messageBox.setText("Error! RoMod Directory could not be created!");
-  const accept = new QPushButton();
-  accept.addEventListener("clicked",() => {
-    process.exit(0)
-  })
-  accept.setText('Restart Applicationn');
-  messageBox.addButton(accept, ButtonRole.AcceptRole);
-  messageBox.exec();
- }
- })
- fs.mkdir(`${process.env.HOME}/RoModAssets/Temp`,(err) => {
-    if (err) { 
-      console.log("Cant create temp")
-      console.log(err)
-    }
- })
- fs.mkdir(`${process.env.HOME}/RoModAssets/Mods`,(err) => {
-  if (err) { 
-    console.log("Cant create mod")
-    console.log(err)
-  }
- })
- fs.mkdir(`${process.env.HOME}/RoModAssets/Recovery`,(err) => {
-  if (err) { 
-    console.log("Cant create reco")
-    console.log(err)
-  }
- })
- fs.writeFile(`${process.env.HOME}/RoModAssets/config.json`,modPacks.toString(),(err) => {
-if (err) {
-  return
-}
- })
-}
-const dir = `${process.env.HOME}/RoModAssets/`
+
 
 win.setWindowTitle("RoMod");
 
@@ -86,7 +101,10 @@ warning.setFont(new QFont("System Font", 10));
 
 
 const directory = new QPushButton();
-directory.setText("Open Mod Pack Directory")
+directory.setText("Open RoMod Directory")
+directory.addEventListener("clicked",() => {
+  dirOpen(`${dir}`)
+})
 const store = new QPushButton();
 store.setText("RoMod Store")
 store.addEventListener("clicked", () => {
