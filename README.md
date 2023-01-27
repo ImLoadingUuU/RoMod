@@ -21,3 +21,8 @@ npm run pack
 ## Download
 Go to release
 
+### Goal
+- [ ] Get rid of NodeGUI
+- [ ] Language Support
+- [ ] Switch to flutter?
+- [ ] Android Support
