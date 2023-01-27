@@ -61,6 +61,7 @@ win.show()
 axios({
     method: 'get',
     url: `https://gamebanana.com/apiv10/Mod/${id}/ProfilePage`  
+
 }).then((result) => {
     win.setWindowTitle(result.data._sName)
     const title = new QLabel();
@@ -168,16 +169,20 @@ let currentResult:any
 list.addEventListener("itemActivated",(item) => {
   let index = list.currentIndex().row()
   console.log(index)
-  let i =   currentResult.data._aRecords[index]
+  let i =   currentResult[index]
   createWindow(i._idRow)
+  console.log("hi")
   
 })
 let currentListener:QListWidgetSignals
+let categoryNumber = 598
+    //  https://gamebanana.com/apiv10/Mod/Index?_nPage=1&_nPerpage=20&_aFilters%5BGeneric_Category%5D=2837
 function load(page:number){
  
   axios({
     method: 'get',
-    url: `https://gamebanana.com/apiv10/Mod/Index?_nPage=${page}&_nPerpage=50&_aFilters%5BGeneric_Category%5D=598`,
+    url: `https://gamebanana.com/apiv10/Mod/Index?_nPage=${page}&_nPerpage=50&_aFilters%5BGeneric_Category%5D=${categoryNumber}`,
+
 }).then((result) => {
 currentResult = result.data._aRecords
   result.data._aRecords.forEach((mod:any) => {

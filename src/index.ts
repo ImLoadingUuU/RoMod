@@ -1,11 +1,16 @@
 import {QMessageBox,ButtonRole,QButtonGroup,QFont,QListWidgetItem, QListWidget,QMainWindow, QWidget, QLabel, FlexLayout, QPushButton, QIcon } from '@nodegui/nodegui';
-
-
 let modPacks:Array<{
   name: string,
   enabled: boolean,
   noInstall: boolean
 }> = []
+function updateConfig(){
+  fs.writeFile(`${process.env.HOME}/RoModAssets/config.json`,modPacks.toString(),(err) => {
+if (err) {
+ return
+}
+  })
+}
 function error(message:string){
   const messageBox = new QMessageBox();
   messageBox.setText(message);
@@ -38,13 +43,27 @@ if (!fs.existsSync(`${process.env.HOME}/RoModAssets`)){
  }
  })
  fs.mkdir(`${process.env.HOME}/RoModAssets/Temp`,(err) => {
-    
+    if (err) { 
+      console.log("Cant create temp")
+      console.log(err)
+    }
  })
  fs.mkdir(`${process.env.HOME}/RoModAssets/Mods`,(err) => {
-    
+  if (err) { 
+    console.log("Cant create mod")
+    console.log(err)
+  }
  })
  fs.mkdir(`${process.env.HOME}/RoModAssets/Recovery`,(err) => {
-    
+  if (err) { 
+    console.log("Cant create reco")
+    console.log(err)
+  }
+ })
+ fs.writeFile(`${process.env.HOME}/RoModAssets/config.json`,modPacks.toString(),(err) => {
+if (err) {
+  return
+}
  })
 }
 const dir = `${process.env.HOME}/RoModAssets/`
@@ -109,6 +128,7 @@ function reload(){
       }
     }
   }
+  updateConfig()
 }
 list.addEventListener("itemActivated",(item) => {
   let index = list.currentIndex().row()
