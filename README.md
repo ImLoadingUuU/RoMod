@@ -1,4 +1,4 @@
-#### RoMod Lite No Longer Supported.
+#### RoMod Lite No Longer Supported,RoMod Rewriting. Next RoMod Might Support Android,Linux
 # RoMOD Lite
 RoMod Lite Use Lower Resources,That might give you better experience if your device is pretty bad
 ## Download
