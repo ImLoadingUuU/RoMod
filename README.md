@@ -1,4 +1,6 @@
-# RoMOD
+#### RoMod Lite No Longer Supported.
+# RoMOD Lite
+RoMod Lite Use Lower Resources,That might give you better experience if your device is pretty bad
 ## Download
 ### OS X
 Go to release
